@@ -1,151 +1,528 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>管理后台</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - AI 智能管理系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-        }
-        .sidebar {
-            height: 100vh;
-            background-color: #343a40;
-            color: white;
-            padding: 20px;
-            width: 15%;
-        }
-        .content {
-            padding: 20px;
-            width: 85%;
-        }
-        .sidebar h2 {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-        }
-        .sidebar ul {
-            list-style: none;
+        * {
+            margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        .sidebar ul li {
-            margin: 10px 0;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+            color: #ffffff;
+            min-height: 100vh;
         }
-        .sidebar ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1em;
+
+        .container-fluid {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            margin-bottom: 48px;
+        }
+
+        .sidebar-title {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
             display: block;
-            padding: 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            padding: 14px 18px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
-        .sidebar ul li a:hover {
-            background-color: #495057;
+
+        .sidebar-menu a:hover {
+            background: rgba(0, 255, 204, 0.1);
+            color: #00ffcc;
+            border-color: rgba(0, 255, 204, 0.3);
         }
-        .sidebar ul li a.active {
-            background-color: #007bff;
+
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2) 0%, rgba(0, 153, 255, 0.2) 100%);
+            color: #00ffcc;
+            border-color: rgba(0, 255, 204, 0.4);
         }
+
+        .sidebar-menu .logout {
+            color: #ff5252;
+            margin-top: auto;
+        }
+
+        .sidebar-menu .logout:hover {
+            background: rgba(255, 82, 82, 0.1);
+            border-color: rgba(255, 82, 82, 0.3);
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
         .content-section {
             display: none;
+            animation: fadeIn 0.4s ease;
         }
+
         .content-section.active {
             display: block;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
         .alert {
+            background: rgba(255, 82, 82, 0.1);
+            border: 1px solid rgba(255, 82, 82, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #ff5252;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ffcc;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
+
+        .form-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #00ffcc;
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(0, 255, 204, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%);
+            color: #0a0e27;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 204, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff5252 0%, #ff1744 100%);
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 82, 82, 0.4);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.4);
+        }
+
+        .table thead th {
+            background: rgba(0, 255, 204, 0.1);
+            color: #00ffcc;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid rgba(0, 255, 204, 0.3);
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(0, 255, 204, 0.05);
+        }
+
         .form-inline {
-            display: inline-block;
-            margin-right: 5px;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            margin-right: 8px;
+            flex-wrap: wrap;
+        }
+
+        .form-inline .form-input {
+            width: auto;
+            min-width: 180px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 0 3px rgba(0, 255, 204, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-item {
+            margin: 0;
+        }
+
+        .page-link {
+            display: block;
+            padding: 10px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: rgba(0, 255, 204, 0.1);
+            color: #00ffcc;
+            border-color: rgba(0, 255, 204, 0.4);
+        }
+
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%);
+            color: #0a0e27;
+            border-color: transparent;
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container-fluid {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+                padding: 20px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .table-responsive {
+                font-size: 12px;
+            }
+
+            .form-inline {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .form-inline .form-input {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
-            <!-- 左侧菜单 -->
-            <nav class="sidebar">
-                <h2>管理后台</h2>
-                <ul>
-                    <li><a href="#" onclick="showSection('link-management')">分流链接管理</a></li>
-                    <li><a href="#" onclick="showSection('api-logs')">API 调用记录</a></li>
-                    <li><a href="/logout" class="text-danger">退出登录</a></li>
-                </ul>
-            </nav>
-            
-            <!-- 右侧内容 -->
-            <main class="content">
-                <!-- 分流链接管理 -->
-                <div id="link-management" class="content-section active">
-                    <h1 class="mb-4">分流链接管理</h1>
-                    
-                    {% if error %}
-                    <div class="alert alert-danger">{{ error }}</div>
-                    {% endif %}
-                    
-                    <div class="card mb-4">
-                        <div class="card-header">创建新链接</div>
-                        <div class="card-body">
-                            <form method="post" action="/admin/create">
-                                <div class="mb-3">
-                                    <label for="redirectUrl" class="form-label">跳转链接</label>
-                                    <input type="text" class="form-control" id="redirectUrl" name="redirectUrl" 
-                                           placeholder="https://example.com" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="userName" class="form-label">用户名</label>
-                                    <input type="text" class="form-control" id="userName" name="userName" 
-                                           placeholder="用户名" required minlength="2">
-                                </div>
-                                <button type="submit" class="btn btn-primary">创建</button>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <h2>现有链接</h2>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>标识ID</th>
-                                <th>跳转链接</th>
-                                <th>用户名称</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in data_store %}
-                            <tr>
-                                <td>{{ item.clickId }}</td>
-                                <td>{{ item.redirectUrl }}</td>
-                                <td>{{ item.userName }}</td>
-                                <td>
-                                    <form method="post" action="/admin/update" class="form-inline">
-                                        <input type="hidden" name="clickId" value="{{ item.clickId }}">
-                                        <input type="text" name="redirectUrl" value="{{ item.redirectUrl }}" 
-                                               class="form-control form-control-sm" required>
-                                        <input type="text" name="userName" value="{{ item.userName }}" 
-                                               class="form-control form-control-sm" required minlength="2">
-                                        <button type="submit" class="btn btn-sm btn-success">更新</button>
-                                    </form>
-                                    <form method="post" action="/admin/delete" class="form-inline">
-                                        <input type="hidden" name="clickId" value="{{ item.clickId }}">
-                                        <button type="submit" class="btn btn-sm btn-danger">删除</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">管理后台</h2>
+                <p class="sidebar-subtitle">AI 智能管理系统</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" onclick="showSection('link-management')" class="active">📊 分流链接管理</a></li>
+                <li><a href="#" onclick="showSection('api-logs')">📈 API 调用记录</a></li>
+                <li style="margin-top: auto;"><a href="/logout" class="logout">🚪 退出登录</a></li>
+            </ul>
+        </nav>
+
+        <main class="content">
+            <div id="link-management" class="content-section active">
+                <div class="page-header">
+                    <h1 class="page-title">分流链接管理</h1>
+                    <p class="page-subtitle">创建和管理您的分流链接</p>
                 </div>
 
-                <!-- API 调用记录 -->
-                <div id="api-logs" class="content-section">
-                    <h1 class="mb-4">API 调用记录</h1>
+                {% if error %}
+                <div class="alert">
+                    <span>⚠️</span>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
 
-                    <!-- 筛选功能 -->
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="filterEndpoint" class="form-label">筛选接口:</label>
+                <div class="card">
+                    <div class="card-header">创建新链接</div>
+                    <form method="post" action="/admin/create">
+                        <div class="form-group">
+                            <label for="redirectUrl" class="form-label">跳转链接</label>
+                            <input
+                                type="text"
+                                class="form-input"
+                                id="redirectUrl"
+                                name="redirectUrl"
+                                placeholder="https://example.com"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="userName" class="form-label">用户名</label>
+                            <input
+                                type="text"
+                                class="form-input"
+                                id="userName"
+                                name="userName"
+                                placeholder="用户名"
+                                required
+                                minlength="2"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-primary">创建链接</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">现有链接列表</div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>标识ID</th>
+                                    <th>跳转链接</th>
+                                    <th>用户名称</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data_store %}
+                                <tr>
+                                    <td>{{ item.clickId }}</td>
+                                    <td>{{ item.redirectUrl }}</td>
+                                    <td>{{ item.userName }}</td>
+                                    <td>
+                                        <form method="post" action="/admin/update" class="form-inline">
+                                            <input type="hidden" name="clickId" value="{{ item.clickId }}">
+                                            <input
+                                                type="text"
+                                                name="redirectUrl"
+                                                value="{{ item.redirectUrl }}"
+                                                class="form-input"
+                                                required
+                                            >
+                                            <input
+                                                type="text"
+                                                name="userName"
+                                                value="{{ item.userName }}"
+                                                class="form-input"
+                                                required
+                                                minlength="2"
+                                            >
+                                            <button type="submit" class="btn btn-sm btn-success">更新</button>
+                                        </form>
+                                        <form method="post" action="/admin/delete" class="form-inline">
+                                            <input type="hidden" name="clickId" value="{{ item.clickId }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">删除</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="api-logs" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">API 调用记录</h1>
+                    <p class="page-subtitle">监控和分析 API 调用情况</p>
+                </div>
+
+                <div class="filter-section">
+                    <div class="card">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="filterEndpoint" class="form-label">筛选接口</label>
                             <select id="filterEndpoint" class="form-select" onchange="filterLogs()">
                                 <option value="/api/tokenId" {% if filter_endpoint == '/api/tokenId' %}selected{% endif %}>/api/tokenId</option>
                                 <option value="/api/endurl" {% if filter_endpoint == '/api/endurl' %}selected{% endif %}>/api/endurl</option>
@@ -153,10 +530,12 @@
                             </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- API 调用记录表格 -->
+                <div class="card">
+                    <div class="card-header">调用日志</div>
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -180,13 +559,12 @@
                         </table>
                     </div>
 
-                    <!-- 分页按钮 -->
                     {% if total_pages > 1 %}
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             {% for page_num in range(1, total_pages + 1) %}
                             <li class="page-item {% if page_num == current_page %}active{% endif %}">
-                                <a class="page-link" 
+                                <a class="page-link"
                                    href="/admin?page={{ page_num }}&filter_endpoint={{ filter_endpoint }}&active_section=api-logs">
                                     {{ page_num }}
                                 </a>
@@ -196,27 +574,28 @@
                     </nav>
                     {% endif %}
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 
-    <!-- 引入 Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function showSection(sectionId) {
             const url = new URL(window.location.href);
             url.searchParams.set('active_section', sectionId);
             window.history.pushState({}, '', url);
-            
+
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(sectionId).classList.add('active');
-            
-            document.querySelectorAll('.sidebar ul li a').forEach(link => {
+
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
                 link.classList.remove('active');
             });
-            document.querySelector(`.sidebar ul li a[onclick="showSection('${sectionId}')"]`).classList.add('active');
+            const activeLink = document.querySelector(`.sidebar-menu a[onclick*="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
         }
 
         function filterLogs() {
